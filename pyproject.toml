@@ -1,0 +1,21 @@
+[tool.poetry]
+name = "raptor-llindex"
+version = "0.1.0"
+description = ""
+authors = ["Shuichi Kataoka <shu01k9@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+requests = "^2.32.3"
+python-dotenv = "^1.0.1"
+llama-index = "^0.12.1"
+chromadb = "^0.5.20"
+llama-index-vector-stores-chroma = "^0.4.0"
+llvmlite = "^0.43.0"
+llama-index-packs-raptor = "^0.3.0"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
