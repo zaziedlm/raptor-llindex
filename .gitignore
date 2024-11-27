@@ -1,2 +1,7 @@
 /.env
 /.venv
+
+!/data
+!/raptor_db
+/data/*
+/raptor_db/*

@@ -76,3 +76,38 @@ if __name__ == "__main__":
         ],  # インデックスへの投入時にtransformationを適用
     )
 
+    # 検索実行 for debug.
+    # Collapsed Tree mode.
+    nodes = raptor_pack.run("オグリキャップの主な勝ち鞍は？", mode="collapsed")
+
+    formatted_nodes = [f"ID: {n.id_}\nScore: {n.get_score()}\n\n{n.get_content()[:200]}..." for n in nodes]
+    print("total nodes: ", len(formatted_nodes))
+    print()
+    print("\n----\n".join(formatted_nodes))
+
+    # Tree Traversal mode.
+    nodes = raptor_pack.run("オグリキャップの主な勝ち鞍は？", mode="tree_traversal")
+
+    formatted_nodes = [f"ID: {n.id_}\nScore: {n.get_score()}\n\n{n.get_content()[:200]}..." for n in nodes]
+    print("total nodes: ", len(formatted_nodes))
+    print()
+    print("\n----\n".join(formatted_nodes))
+
+    # 問い合わせ実行
+    from llama_index.packs.raptor import RaptorRetriever
+    from llama_index.core.query_engine import RetrieverQueryEngine
+
+    collapsed_retriever = RaptorRetriever([], embed_model=embed_model, llm=llm, vector_store=vector_store, mode="collapsed")
+    collapsed_retriever_query_engine = RetrieverQueryEngine.from_args(collapsed_retriever, llm=llm)
+
+    query = "オグリキャップの主な勝ち鞍を教えて。勝ち鞍とは優勝したレースのことです。"
+    response = collapsed_retriever_query_engine.query(query)
+    print(f"{query}:{str(response)}")
+
+    tree_traversal_retriever = RaptorRetriever([], embed_model=embed_model, llm=llm, vector_store=vector_store, mode="tree_traversal")
+    tree_traversal_retriever_query_engine = RetrieverQueryEngine.from_args(tree_traversal_retriever, llm=llm)
+
+    response = tree_traversal_retriever_query_engine.query(query)
+    print(f"{query}:{str(response)}")
+
+
