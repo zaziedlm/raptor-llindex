@@ -43,10 +43,19 @@ if __name__ == "__main__":
 
     PHOENIX_API_KEY = os.getenv('LLAMATRACE_API_KEY')
     os.environ["OTEL_EXPORTER_OTLP_HEADERS"] = f"api_key={PHOENIX_API_KEY}"
-    llama_index.core.set_global_handler("arize_phoenix",
-                                        endpoint=os.getenv('LLAMATRACE_ENDPOINT'),
-                                        project_name=os.getenv('LLAMATRACE_PROJECT'),
+
+    from phoenix.otel import register
+
+    # configure the Phoenix tracer
+    tracer_provider = register(
+        project_name=os.getenv("LLAMATRACE_PROJECT"),
+        endpoint=os.getenv("LLAMATRACE_ENDPOINT"),
     )
+
+    from openinference.instrumentation.llama_index import LlamaIndexInstrumentor
+    # Initialize the LlamaIndexInstrumentor
+    LlamaIndexInstrumentor().instrument(tracer_provider=tracer_provider)
+
 
     # 環境変数からカンマ区切りの文字列を取得
     wiki_titles_string = os.getenv("SCRAPING_WIKI_TITLES")
