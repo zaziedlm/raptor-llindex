@@ -73,11 +73,18 @@ if __name__ == "__main__":
     from llama_index.vector_stores.chroma import ChromaVectorStore
     from llama_index.packs.raptor import RaptorPack
 
-    # RaptorPackの初期化
+    # Chroma DB の永続化パス
     client = chromadb.PersistentClient(path="./raptor_db")
     collection = client.get_or_create_collection("raptor")
 
     vector_store = ChromaVectorStore(chroma_collection=collection)
+
+    from llama_index.core import StorageContext
+    from llama_index.core import VectorStoreIndex
+    # StorageContext を作成し、永続化
+    storage_context = StorageContext.from_defaults(vector_store=vector_store)
+    index = VectorStoreIndex.from_documents(documents, storage_context=storage_context)
+    storage_context.persist(persist_dir="./raptor_db")
 
     # OpenAIのモデルの初期化
     embed_model = OpenAIEmbedding(model="text-embedding-3-small")
